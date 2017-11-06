@@ -6,5 +6,4 @@ public class LightBoxParams {
     public StyleParams.Color backgroundColor;
     public boolean tapBackgroundToDismiss;
     public boolean overrideBackPress;
-    public int adjustSoftInput;
 }

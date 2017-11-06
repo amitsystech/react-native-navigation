@@ -119,11 +119,11 @@ public class CollapsingTopBar extends TopBar implements CollapsingView {
     }
 
     @Override
-    protected void addTitleBar(StyleParams styleParams) {
+    protected void addTitleBar() {
         if (params.hasReactView()) {
             titleBarAndContextualMenuContainer.addView(titleBar, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         } else {
-            super.addTitleBar(styleParams);
+            super.addTitleBar();
         }
     }
 

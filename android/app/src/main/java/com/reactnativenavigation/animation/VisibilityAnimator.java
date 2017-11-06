@@ -1,9 +1,6 @@
 package com.reactnativenavigation.animation;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.support.annotation.Nullable;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.view.View;
 
@@ -27,12 +24,12 @@ public class VisibilityAnimator {
         this.hiddenEndValue = hideDirection == HideDirection.Up ? -height : height;
     }
 
-    public void setVisible(boolean visible, boolean animate, @Nullable Runnable onAnimationEnd) {
+    public void setVisible(boolean visible, boolean animate) {
         cancelAnimator();
         if (visible) {
-            show(animate, onAnimationEnd);
+            show(animate);
         } else {
-            hide(animate, onAnimationEnd);
+            hide(animate);
         }
     }
 
@@ -43,39 +40,31 @@ public class VisibilityAnimator {
         }
     }
 
-    private void show(boolean animate, @Nullable Runnable onAnimationEnd) {
+    private void show(boolean animate) {
         if (animate) {
-            animator = createAnimator(true, onAnimationEnd);
+            animator = createAnimator(true);
             animator.start();
         } else {
             view.setTranslationY(SHOW_END_VALUE);
             view.setVisibility(View.VISIBLE);
-            if (onAnimationEnd != null) onAnimationEnd.run();
         }
     }
 
-    private void hide(boolean animate, @Nullable Runnable onAnimationEnd) {
+    private void hide(boolean animate) {
         if (animate) {
-            animator = createAnimator(false, onAnimationEnd);
+            animator = createAnimator(false);
             animator.start();
         } else {
             view.setTranslationY(hiddenEndValue);
             view.setVisibility(View.GONE);
-            if (onAnimationEnd != null) onAnimationEnd.run();
         }
     }
 
-    private ObjectAnimator createAnimator(final boolean show, @Nullable final Runnable onAnimationEnd) {
+    private ObjectAnimator createAnimator(final boolean show) {
         view.setVisibility(View.VISIBLE);
         final ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, show ? SHOW_END_VALUE : hiddenEndValue);
         animator.setDuration(DURATION);
         animator.setInterpolator(interpolator);
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (onAnimationEnd != null) onAnimationEnd.run();
-            }
-        });
         return animator;
     }
 }

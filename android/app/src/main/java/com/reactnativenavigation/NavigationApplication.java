@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.util.Log;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -39,6 +40,7 @@ public abstract class NavigationApplication extends Application implements React
 
     @Override
     public void startActivity(Intent intent) {
+        Log.v("intent=", "Start activity="+intent.getClass().getName());
         String animationType = intent.getStringExtra("animationType");
         if (animationType != null && animationType.equals("fade")) {
             Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
@@ -117,10 +119,6 @@ public abstract class NavigationApplication extends Application implements React
     }
 
     public abstract boolean isDebug();
-
-    public boolean clearHostOnActivityDestroy() {
-        return true;
-    }
 
     @Nullable
     public abstract List<ReactPackage> createAdditionalReactPackages();

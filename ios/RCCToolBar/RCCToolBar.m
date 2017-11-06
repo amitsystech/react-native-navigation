@@ -8,10 +8,9 @@
 
 #import "RCCToolBar.h"
 
-@interface RCCToolBarView : UIView
+@interface RCCToolBarView : UIToolbar
 
 @property (nonatomic) BOOL toolBarTranslucent;
-@property (nonatomic, strong) UIToolbar *toolbar;
 
 @end
 
@@ -23,10 +22,7 @@
     self = [super init];
     if (self)
     {
-        self.toolBarTranslucent = self.toolbar.translucent;
-        self.backgroundColor = [UIColor clearColor];
-        self.toolbar = [[UIToolbar alloc] init];
-        [self addSubview:self.toolbar];
+        self.toolBarTranslucent = self.translucent;
     }
     return self;
 }
@@ -35,13 +31,7 @@
 -(void)didMoveToWindow
 {
     [super didMoveToWindow];
-    self.toolbar.translucent = self.toolBarTranslucent;
-}
-
--(void)reactSetFrame:(CGRect)frame {
-    [super reactSetFrame:frame];
-    
-    self.toolbar.frame = self.bounds;
+    self.translucent = self.toolBarTranslucent;
 }
 
 @end

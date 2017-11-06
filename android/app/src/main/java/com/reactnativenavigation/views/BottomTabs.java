@@ -86,7 +86,7 @@ public class BottomTabs extends AHBottomNavigation {
 
     public void setVisibility(boolean hidden, boolean animated) {
         if (visibilityAnimator != null) {
-            visibilityAnimator.setVisible(!hidden, animated, null);
+            visibilityAnimator.setVisible(!hidden, animated);
         } else {
             setVisibility(hidden);
         }

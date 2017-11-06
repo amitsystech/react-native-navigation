@@ -1,5 +1,6 @@
 package com.reactnativenavigation.controllers;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -7,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -15,6 +17,8 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
+import com.joshblour.reactnativepermissions.ReactNativePermissionsModule;
+import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.events.Event;
 import com.reactnativenavigation.events.EventBus;
@@ -52,11 +56,13 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
      * This is somewhat weird, and in the future we better use a single activity with changing contentView similar to ReactNative impl.
      * Along with that, we should handle commands from the bridge using onNewIntent
      */
-    static NavigationActivity currentActivity;
+    public static NavigationActivity currentActivity;
 
     private ActivityParams activityParams;
     private ModalController modalController;
     private Layout layout;
+
+
     @Nullable private PermissionListener mPermissionListener;
 
     @Override
@@ -135,7 +141,7 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         super.onPause();
         currentActivity = null;
         IntentDataHandler.onPause(getIntent());
-        getReactGateway().onPauseActivity(this);
+        getReactGateway().onPauseActivity();
         NavigationApplication.instance.getActivityCallbacks().onActivityPaused(this);
         EventBus.instance.unregister(this);
     }
@@ -166,26 +172,19 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
 
     private void destroyJsIfNeeded() {
         if (currentActivity == null || currentActivity.isFinishing()) {
-            getReactGateway().onDestroyApp(this);
+            getReactGateway().onDestroyApp();
         }
     }
 
     @Override
     public void invokeDefaultOnBackPressed() {
-        if (layout != null && !layout.onBackPressed()) {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     @Override
     public void onBackPressed() {
-        if (layout != null && layout.handleBackInJs()) {
-            return;
-        }
-        if (getReactGateway().isInitialized()) {
+        if (layout != null && !layout.onBackPressed()) {
             getReactGateway().onBackPressed();
-        } else {
-            super.onBackPressed();
         }
     }
 
@@ -251,8 +250,8 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         modalController.showModal(screenParams);
     }
 
-    void dismissTopModal(ScreenParams params) {
-        modalController.dismissTopModal(params);
+    void dismissTopModal() {
+        modalController.dismissTopModal();
     }
 
     void dismissAllModals() {
@@ -446,8 +445,12 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         NavigationApplication.instance.getActivityCallbacks().onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        ReactNativePermissionsModule.rnPermissionModule.onReceiveUserActionPermission(requestCode, grantResults);
+
         if (mPermissionListener != null && mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             mPermissionListener = null;
+
         }
     }
 

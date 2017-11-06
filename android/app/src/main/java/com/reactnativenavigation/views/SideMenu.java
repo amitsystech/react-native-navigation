@@ -58,11 +58,11 @@ public class SideMenu extends DrawerLayout {
     }
 
     public void setVisible(boolean visible, boolean animated, Side side) {
-        if (visible) {
+        if (!isShown() && visible) {
             openDrawer(animated, side);
         }
 
-        if (!visible) {
+        if (isShown() && !visible) {
             closeDrawer(animated, side);
         }
     }

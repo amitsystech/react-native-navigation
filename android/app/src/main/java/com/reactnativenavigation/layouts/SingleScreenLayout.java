@@ -109,7 +109,7 @@ public class SingleScreenLayout extends BaseLayout {
 
     @Override
     public boolean onBackPressed() {
-        if (handleBackInJs()) {
+        if (stack.handleBackPressInJs()) {
             return true;
         }
 
@@ -120,11 +120,6 @@ public class SingleScreenLayout extends BaseLayout {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public boolean handleBackInJs() {
-        return stack.handleBackPressInJs();
     }
 
     @Override
